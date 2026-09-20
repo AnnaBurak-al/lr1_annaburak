@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <clocale>
+#include <fstream>
 
 struct Pipe {
 	std::string name;
@@ -25,7 +26,7 @@ struct Pipe {
 		while (true) {
 			std::cout << "Введите диаметр в мм: ";
 			if (std::cin >> diametr && std::cin.peek() == '\n' && diametr > 0) break;
-			std::cout << "Введите положительное число.\n";
+			std::cout << "Введите положительное число\n";
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 		}
@@ -71,6 +72,21 @@ struct Pipe {
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 		}
+	}
+
+	void saveToFile(std::ofstream& out) const {
+		out << name << "\n";
+		out << length << "\n";
+		out << diametr << "\n";
+		out << (repair ? 1 : 0) << "\n";
+	}
+
+	void loadFromFile(std::ifstream& in) {
+		in >> name >> length >> diametr;
+		int temp;
+		in >> temp;
+		repair = (temp == 1);
+		flag = false;
 	}
 };
 
@@ -128,7 +144,7 @@ struct CS {
 		while (true) {
 			std::cout << "Выберите действие: ";
 			if (std::cin >> work && std::cin.peek() == '\n' && (work == 1 || work == 2)) break;
-			std::cout << "Введите 1 или 2.\n";
+			std::cout << "Введите 1 или 2\n";
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 		}
@@ -152,6 +168,18 @@ struct CS {
 			}
 		}
 	}
+
+	void saveToFile(std::ofstream& out) const {
+		out << name << "\n";
+		out << kol_tsex << "\n";
+		out << active_tsex << "\n";
+		out << class_stan << "\n";
+	}
+
+	void loadFromFile(std::ifstream& in) {
+		in >> name >> kol_tsex >> active_tsex >> class_stan;
+		flag = false;
+	}
 };
 
 int main()
@@ -159,19 +187,61 @@ int main()
 	setlocale(LC_ALL, "Russian");
 	Pipe pipe;
 	CS cs;
+	int choice;
+	while (true) {
+		std::cout << "\nМеню\n";
+		std::cout << "1. Добавить трубу\n";
+		std::cout << "2. Добавить КС\n";
+		std::cout << "3. Просмотр всех объектов\n";
+		std::cout << "4. Редактировать трубу\n";
+		std::cout << "5. Редактировать КС (запуск/останов цеха)\n";
+		std::cout << "6. Сохранить в файл\n";
+		std::cout << "7. Загрузить из файла\n";
+		std::cout << "0. Выход\n";
+		std::cout << "Выберите действие: ";
 
-	pipe.read();
-	cs.read();
+		if (!(std::cin >> choice) || std::cin.peek() != '\n') {
+			std::cout << "Введите число от 0 до 7.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+			continue;
+		}
 
-	pipe.ent_repair();
-	cs.work_cs();
+		if (choice == 0) break;
 
-	pipe.print();
-	cs.print();
-
+		switch (choice) {
+		case 1: pipe.read(); break;
+		case 2: cs.read(); break;
+		case 3: pipe.print(); cs.print(); break;
+		case 4: pipe.ent_repair(); break;
+		case 5: cs.work_cs(); break;
+		case 6: {
+			std::ofstream outFile("buraklr1.txt");
+			if (outFile.is_open()) {
+				pipe.saveToFile(outFile);
+				cs.saveToFile(outFile);
+				outFile.close();
+				std::cout << "Данные сохранены в файл buraklr1.txt\n";
+			}
+			else { std::cout << "Ошибка\n"; }
+			break;
+		}
+		case 7: {
+			std::ifstream inFile("buraklr1.txt");
+			if (inFile.is_open()) {
+				pipe.loadFromFile(inFile);
+				cs.loadFromFile(inFile);
+				inFile.close();
+				std::cout << "Данные загружены из buraklr1.txt\n";
+			}
+			else { std::cout << "Файл buraklr1.txt не найден\n"; }
+			break;
+		}
+		default: std::cout << "Неверный пункт меню\n";
+		}
+	}
 	return 0;
 }
-
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
