@@ -15,7 +15,6 @@ struct Pipe {
 	void read() {
 		std::cout << "Введите название трубы: ";
 		std::cin >> name;
-
 		while (true) {
 			std::cout << "Введите длину в км: ";
 			if (std::cin >> length && std::cin.peek() == '\n' && length > 0) break;
@@ -23,7 +22,6 @@ struct Pipe {
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 		}
-
 		while (true) {
 			std::cout << "Введите диаметр в мм: ";
 			if (std::cin >> diametr && std::cin.peek() == '\n' && diametr > 0) break;
@@ -31,7 +29,6 @@ struct Pipe {
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 		}
-
 		int tempRepair;
 		while (true) {
 			std::cout << "В ремонте? (1 - да, 0 - нет): ";
@@ -56,6 +53,24 @@ struct Pipe {
 		std::cout << "Длина: " << length << " км\n";
 		std::cout << "Диаметр: " << diametr << " мм\n";
 		std::cout << "В ремонте?: " << (repair ? "да" : "нет") << "\n";
+	}
+
+	void ent_repair() {
+		if (flag) {
+			std::cout << "\nСначала добавьте трубу\n";
+			return;
+		}
+		int izmrepair;
+		while (true) {
+			std::cout << "\nИзменить признак в ремонте (1 - в ремонте, 0 - не в ремонте): ";
+			if (std::cin >> izmrepair && std::cin.peek() == '\n' && (izmrepair == 0 || izmrepair == 1)) {
+				repair = (izmrepair == 1);
+				break;
+			}
+			std::cout << "Введите 0 или 1.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
 	}
 };
 
@@ -104,6 +119,39 @@ struct CS {
 		std::cout << "Количество активных цехов: " << active_tsex << "\n";
 		std::cout << "Класс станции: " << class_stan << "\n";
 	}
+
+	void work_cs() {
+		int work;
+		std::cout << "\nЗапуститить или остановить цех КС" << name << ":\n";
+		std::cout << "1 - запустить цех\n";
+		std::cout << "2 - остановить цех\n";
+		while (true) {
+			std::cout << "Выберите действие: ";
+			if (std::cin >> work && std::cin.peek() == '\n' && (work == 1 || work == 2)) break;
+			std::cout << "Введите 1 или 2.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+
+		if (work == 1) {
+			if (active_tsex < kol_tsex) {
+				active_tsex++;
+				std::cout << "Цех запущен, активных цехов: " << active_tsex << "\n";
+			}
+			else {
+				std::cout << "Все цеха уже работают!\n";
+			}
+		}
+		else if (work == 2) {
+			if (active_tsex > 0) {
+				active_tsex--;
+				std::cout << "Цех остановлен, активных цехов: " << active_tsex << "\n";
+			}
+			else {
+				std::cout << "Нет работающих цехов для остановки\n";
+			}
+		}
+	}
 };
 
 int main()
@@ -111,10 +159,14 @@ int main()
 	setlocale(LC_ALL, "Russian");
 	Pipe pipe;
 	CS cs;
-	pipe.read();
-	pipe.print();
 
+	pipe.read();
 	cs.read();
+
+	pipe.ent_repair();
+	cs.work_cs();
+
+	pipe.print();
 	cs.print();
 
 	return 0;
