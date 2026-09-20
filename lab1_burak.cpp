@@ -4,31 +4,58 @@
 #include <iostream>
 #include <string>
 #include <clocale>
+
 struct Pipe {
 	std::string name;
 	double length;
 	double diametr;
 	bool repair;
+	bool flag = true;
+
 	void read() {
-		std::cout << "введите название трубы: ";
+		std::cout << "Введите название трубы: ";
 		std::cin >> name;
-		std::cout << "введите длину в км: ";
-		std::cin >> length;
-		std::cout << "введите диаметр в мм: ";
-		std::cin >> diametr;
-		std::cout << "в ремонте? (1 - да, 0 - нет):";
-		std::cin >> repair;
+
+		while (true) {
+			std::cout << "Введите длину в км: ";
+			if (std::cin >> length && std::cin.peek() == '\n' && length > 0) break;
+			std::cout << "Введите положительное число.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+
+		while (true) {
+			std::cout << "Введите диаметр в мм: ";
+			if (std::cin >> diametr && std::cin.peek() == '\n' && diametr > 0) break;
+			std::cout << "Введите положительное число.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+
+		int tempRepair;
+		while (true) {
+			std::cout << "В ремонте? (1 - да, 0 - нет): ";
+			if (std::cin >> tempRepair && std::cin.peek() == '\n' && (tempRepair == 0 || tempRepair == 1)) {
+				repair = (tempRepair == 1);
+				break;
+			}
+			std::cout << "Введите 0 или 1.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+		flag = false;
 	}
-	void print() {
-		std::cout << "\nитоговая информация о трубе\n";
-		std::cout << "название: " << name << "\n";
-		std::cout << "длина: " << length << " км\n";
-		std::cout << "диаметр: " << diametr << " мм\n";
-		std::cout << "в ремонте?: " << (repair ? "да" : "нет") << "\n";
-	}
-	void ent_repair() {
-		std::cout << "\nизменить признак в ремонте (1 - в ремонте, 0 - не в ремонте): ";
-		std::cin >> repair;
+
+	void print() const {
+		if (flag) {
+			std::cout << "\nТруба еще не добавлена!\n";
+			return;
+		}
+		std::cout << "\nИтоговая информация о трубе\n";
+		std::cout << "Название: " << name << "\n";
+		std::cout << "Длина: " << length << " км\n";
+		std::cout << "Диаметр: " << diametr << " мм\n";
+		std::cout << "В ремонте?: " << (repair ? "да" : "нет") << "\n";
 	}
 };
 
@@ -37,35 +64,60 @@ struct CS {
 	int kol_tsex;
 	int active_tsex;
 	int class_stan;
+	bool flag = true;
+
 	void read() {
-		std::cout << "\nвведите название КС: ";
+		std::cout << "\nВведите название КС: ";
 		std::cin >> name;
-		std::cout << "введите количество цехов (всего): ";
-		std::cin >> kol_tsex;
-		std::cout << "введите количество цехов в работе: ";
-		std::cin >> active_tsex;
-		std::cout << "введите класс станции: ";
-		std::cin >> class_stan;
+		while (true) {
+			std::cout << "Введите количество цехов (всего): ";
+			if (std::cin >> kol_tsex && std::cin.peek() == '\n' && kol_tsex > 0) break;
+			std::cout << "Введите положительное целое число.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+		while (true) {
+			std::cout << "Введите количество цехов в работе: ";
+			if (std::cin >> active_tsex && std::cin.peek() == '\n' && active_tsex >= 0 && active_tsex <= kol_tsex) break;
+			std::cout << "Введите число от 0 до " << kol_tsex << ".\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+		while (true) {
+			std::cout << "Введите класс станции: ";
+			if (std::cin >> class_stan && std::cin.peek() == '\n' && class_stan > 0) break;
+			std::cout << "Введите положительное целое число.\n";
+			std::cin.clear();
+			std::cin.ignore(10000, '\n');
+		}
+		flag = false;
 	}
-	void print() {
-		std::cout << "\nитоговая информация о КС\n";
-		std::cout << "название: " << name << "\n";
-		std::cout << "количество цехов: " << kol_tsex << "\n";
-		std::cout << "количество активных цехов: " << active_tsex << "\n";
-		std::cout << "класс станции: " << class_stan << "\n";
+
+	void print() const {
+		if (flag) {
+			std::cout << "\nКомпрессорная станция еще не добавлена\n";
+			return;
+		}
+		std::cout << "\nИтоговая информация о КС\n";
+		std::cout << "Название: " << name << "\n";
+		std::cout << "Количество цехов: " << kol_tsex << "\n";
+		std::cout << "Количество активных цехов: " << active_tsex << "\n";
+		std::cout << "Класс станции: " << class_stan << "\n";
 	}
 };
+
 int main()
 {
 	setlocale(LC_ALL, "Russian");
+	// На этом этапе мы просто проверяем, что структуры работают
 	Pipe pipe;
+	CS cs;
 	pipe.read();
 	pipe.print();
-	pipe.ent_repair();
-	pipe.print();
-	CS cs;
+
 	cs.read();
 	cs.print();
+
 	return 0;
 }
 
