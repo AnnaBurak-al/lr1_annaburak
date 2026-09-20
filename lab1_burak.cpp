@@ -109,7 +109,6 @@ struct CS {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	// На этом этапе мы просто проверяем, что структуры работают
 	Pipe pipe;
 	CS cs;
 	pipe.read();
