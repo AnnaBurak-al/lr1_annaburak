@@ -88,7 +88,7 @@ struct Pipe {
     void loadFromFile(std::ifstream& in) {
         flag = true;
         name = ""; length = 0; diametr = 0; repair = false;
-        std::streampos pos = in.tellg();
+        int pos = in.tellg();
 
         std::string marker;
         if (!std::getline(in, marker)) return;
@@ -293,12 +293,12 @@ int main()
 
         if (!std::getline(std::cin, inputStr)) break;
 
-        if (inputStr.length() != 1 || !isdigit(inputStr[0])) {
+        if (inputStr.length() != 1 || inputStr[0] < '0' || inputStr[0] > '7') {
             std::cout << "Введите одно число от 0 до 7.\n";
             continue;
         }
 
-        int choice = inputStr[0] - '0';
+        int choice = std::stoi(inputStr);
         if (choice == 0) break;
 
         switch (choice) {
