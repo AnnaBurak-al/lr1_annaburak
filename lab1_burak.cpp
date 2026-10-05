@@ -9,11 +9,11 @@
 struct Pipe {
     std::string name;
     double length = 0.0;
-    double diametr = 0.0;
+    int diametr = 0; 
     bool repair = false;
-    bool flag = true;
 
-    void read() {
+    void read()
+    {
         std::cout << "Введите название трубы: ";
         std::getline(std::cin, name);
 
@@ -44,14 +44,9 @@ struct Pipe {
             }
             std::cout << "Введите 0 или 1.\n";
         }
-        flag = false;
     }
 
     void print() const {
-        if (flag) {
-            std::cout << "\nТруба еще не добавлена\n";
-            return;
-        }
         std::cout << "\nИтоговая информация о трубе\n";
         std::cout << "Название: " << name << "\n";
         std::cout << "Длина: " << length << " км\n";
@@ -60,10 +55,6 @@ struct Pipe {
     }
 
     void ent_repair() {
-        if (flag) {
-            std::cout << "\nСначала добавьте трубу\n";
-            return;
-        }
         std::string input;
         while (true) {
             std::cout << "\nИзменить признак в ремонте (1 - в ремонте, 0 - не в ремонте): ";
@@ -76,8 +67,7 @@ struct Pipe {
         }
     }
 
-    void saveToFile(std::ofstream& out) const {
-        if (flag) return;
+    void saveToFile(std::ofstream& out) {
         out << "PIPE\n";
         out << name << "\n";
         out << length << "\n";
@@ -85,38 +75,34 @@ struct Pipe {
         out << (repair ? 1 : 0) << "\n";
     }
 
-    void loadFromFile(std::ifstream& in) {
-        flag = true;
-        name = ""; length = 0; diametr = 0; repair = false;
-        int pos = in.tellg();
-
+    bool loadFromFile(std::ifstream& in) {
         std::string marker;
-        if (!std::getline(in, marker)) return;
+        if (!std::getline(in, marker)) return false;
 
         while (marker.empty() && std::getline(in, marker)) {}
-        if (marker.empty()) return;
+        if (marker.empty()) return false;
 
         if (marker != "PIPE") {
-            in.seekg(pos);
-            return;
+            return false;
         }
 
         std::string tempName;
-        if (!std::getline(in, tempName)) return;
-        if (tempName.empty()) return;
+        if (!std::getline(in, tempName)) return false;
+        if (tempName.empty()) return false;
 
         name = tempName;
 
-        if (!(in >> length)) return;
-        if (!(in >> diametr)) return;
+        if (!(in >> length)) return false;
+        if (!(in >> diametr)) return false;
 
         int temp;
-        if (!(in >> temp)) return;
+        if (!(in >> temp)) return false;
 
         repair = (temp == 1);
-        flag = false;
 
         in.ignore(10000, '\n');
+
+        return true;
     }
 };
 
@@ -125,7 +111,6 @@ struct CS {
     int kol_tsex = 0;
     int active_tsex = 0;
     int class_stan = 0;
-    bool flag = true;
 
     void read() {
         std::cout << "\nВведите название КС: ";
@@ -139,35 +124,15 @@ struct CS {
             std::cin.ignore(10000, '\n');
         }
         std::cin.ignore(10000, '\n');
+
         while (true) {
             std::cout << "Введите количество цехов в работе: ";
-            std::string input;
-            std::getline(std::cin, input); 
-
-            bool isValid = true; 
-            if (input.empty()) {
-                isValid = false;
-            }
-            else {
-                for (char c : input) {
-                    if (!isdigit(c)) {
-                        isValid = false; 
-                        break;           
-                    }
-                }
-            }
-
-            if (isValid) {
-                int val = std::stoi(input);
-
-                if (val >= 0 && val <= kol_tsex) {
-                    active_tsex = val; 
-                    break;            
-                }
-            }
-
+            if (std::cin >> active_tsex && std::cin.peek() == '\n' && active_tsex >= 0 && active_tsex <= kol_tsex) break;
             std::cout << "Введите число от 0 до " << kol_tsex << ".\n";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
         }
+
         while (true) {
             std::cout << "Введите класс станции: ";
             if (std::cin >> class_stan && std::cin.peek() == '\n' && class_stan > 0) break;
@@ -175,14 +140,9 @@ struct CS {
             std::cin.clear();
             std::cin.ignore(10000, '\n');
         }
-        flag = false;
     }
 
     void print() const {
-        if (flag) {
-            std::cout << "\nКомпрессорная станция еще не добавлена\n";
-            return;
-        }
         std::cout << "\nИтоговая информация о КС\n";
         std::cout << "Название: " << name << "\n";
         std::cout << "Количество цехов: " << kol_tsex << "\n";
@@ -191,12 +151,6 @@ struct CS {
     }
 
     void work_cs() {
-        if (flag) {
-            std::cout << "\nСначала добавьте КС\n";
-            return;
-        }
-
-        std::string input;
         int work;
         std::cout << "\nЗапустить или остановить цех КС " << name << ":\n";
         std::cout << "1 - запустить цех\n";
@@ -204,13 +158,10 @@ struct CS {
 
         while (true) {
             std::cout << "Выберите действие: ";
-            std::getline(std::cin, input);
-
-            if (input == "1" || input == "2") {
-                work = std::stoi(input);
-                break;
-            }
+            if (std::cin >> work && std::cin.peek() == '\n' && (work == 1 || work == 2)) break;
             std::cout << "Введите 1 или 2\n";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
         }
 
         if (work == 1) {
@@ -233,8 +184,7 @@ struct CS {
         }
     }
 
-    void saveToFile(std::ofstream& out) const {
-        if (flag) return;
+    void saveToFile(std::ofstream& out) {
         out << "CS\n";
         out << name << "\n";
         out << kol_tsex << "\n";
@@ -242,32 +192,28 @@ struct CS {
         out << class_stan << "\n";
     }
 
-    void loadFromFile(std::ifstream& in) {
-        flag = true;
-        name = ""; kol_tsex = 0; active_tsex = 0; class_stan = 0;
-        std::streampos pos = in.tellg();
-
+    bool loadFromFile(std::ifstream& in) {
         std::string marker;
-        if (!std::getline(in, marker)) return;
+        if (!std::getline(in, marker)) return false;
 
         while (marker.empty() && std::getline(in, marker)) {}
-        if (marker.empty()) return;
+        if (marker.empty()) return false;
 
         if (marker != "CS") {
-            in.seekg(pos);
-            return;
+            return false;
         }
 
         std::string tempName;
-        if (!std::getline(in, tempName)) return;
-        if (tempName.empty()) return;
+        if (!std::getline(in, tempName)) return false;
+        if (tempName.empty()) return false;
 
         name = tempName;
 
-        if (!(in >> kol_tsex >> active_tsex >> class_stan)) return;
+        if (!(in >> kol_tsex >> active_tsex >> class_stan)) return false;
 
-        flag = false;
         in.ignore(10000, '\n');
+
+        return true;
     }
 };
 
@@ -277,7 +223,10 @@ int main()
     Pipe pipe;
     CS cs;
 
-    std::string inputStr;
+    bool pipeExists = false;
+    bool csExists = false;
+
+    int choice;
 
     while (true) {
         std::cout << "\nМеню\n";
@@ -291,43 +240,105 @@ int main()
         std::cout << "0. Выход\n";
         std::cout << "\nВыберите действие: ";
 
-        if (!std::getline(std::cin, inputStr)) break;
+        if (!(std::cin >> choice) || std::cin.peek() != '\n') {
+            std::cout << "Введите одно число от 0 до 7.\n";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            continue;
+        }
+        std::cin.ignore(10000, '\n');
 
-        if (inputStr.length() != 1 || inputStr[0] < '0' || inputStr[0] > '7') {
+        if (choice < 0 || choice > 7) {
             std::cout << "Введите одно число от 0 до 7.\n";
             continue;
         }
 
-        int choice = std::stoi(inputStr);
         if (choice == 0) break;
 
         switch (choice) {
-        case 1: pipe.read(); break;
-        case 2: cs.read(); break;
-        case 3:
-            pipe.print();
-            cs.print();
+        case 1:
+        {
+            pipe.read();
+            pipeExists = true;
             break;
-        case 4: pipe.ent_repair(); break;
-        case 5: cs.work_cs(); break;
+        }
+        case 2:
+        {
+            cs.read();
+            csExists = true;
+            break;
+        }
+        case 3:
+            if (pipeExists) {
+                pipe.print();
+            }
+            else {
+                std::cout << "\nТруба еще не создана\n";
+            }
+            if (csExists) {
+                cs.print();
+            }
+            else {
+                std::cout << "\nКомпрессорная станция еще не создана\n";
+            }
+            break;
+        case 4:
+            if (pipeExists) {
+                pipe.ent_repair();
+            }
+            else {
+                std::cout << "\nТруба еще не создана\n";
+            }
+            break;
+        case 5:
+            if (csExists) {
+                cs.work_cs();
+            }
+            else {
+                std::cout << "\nКомпрессорная станция еще не создана\n";
+            }
+            break;
         case 6: {
             std::ofstream outFile("buraklr1.txt");
             if (outFile.is_open()) {
-                pipe.saveToFile(outFile);
-                cs.saveToFile(outFile);
+                if (pipeExists) {
+                    pipe.saveToFile(outFile);
+                }
+                if (csExists) {
+                    cs.saveToFile(outFile);
+                }
                 outFile.close();
                 std::cout << "Данные сохранены в файл buraklr1.txt\n";
             }
-            else { std::cout << "Ошибка открытия файла для записи\n"; }
+            else {
+                std::cout << "Ошибка открытия файла для записи\n";
+            }
             break;
         }
         case 7: {
             std::ifstream inFile("buraklr1.txt");
             if (inFile.is_open()) {
-                pipe.loadFromFile(inFile);
-                cs.loadFromFile(inFile);
+                bool foundPipe = false;
+                bool foundCS = false;
+
+                if (pipe.loadFromFile(inFile)) {
+                    pipeExists = true;
+                    foundPipe = true;
+                }
+
+                if (cs.loadFromFile(inFile)) {
+                    csExists = true;
+                    foundCS = true;
+                }
+
                 inFile.close();
-                std::cout << "Данные загружены из buraklr1.txt\n";
+
+                if (foundPipe || foundCS) {
+                    std::cout << "Данные загружены из buraklr1.txt\n";
+                }
+                else {
+                    std::cout << "Файл пуст или не содержит данных\n";
+                }
             }
             else {
                 std::cout << "Файл buraklr1.txt не найден\n";
