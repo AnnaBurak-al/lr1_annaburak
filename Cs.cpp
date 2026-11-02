@@ -2,10 +2,15 @@
 
 int Cs::nextId = 1;
 
-Cs::Cs() : id(nextId++), kol_tsex(0), active_tsex(0), class_stan(0) {}
+Cs::Cs() : 
+    id(nextId++), 
+    kol_tsex(0), 
+    active_tsex(0), 
+    class_stan(0) {}
 
 void Cs::updateNextId(int loadedId) {
-    if (loadedId >= nextId) nextId = loadedId + 1;
+    if (loadedId >= nextId) 
+        nextId = loadedId + 1;
 }
 
 int Cs::getId() const { 
@@ -45,7 +50,7 @@ void Cs::read() {
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
-    Logger::getInstance().log("Создана КС ID=" + std::to_string(id) + ": " + name);
+    std::cerr << "Создана КС ID=" << id << ": " << name << "\n";
 }
 
 std::ostream& operator<<(std::ostream& os, const Cs& c) {
@@ -75,7 +80,7 @@ void Cs::work_cs() {
 void Cs::startWorkshop() {
     if (active_tsex < kol_tsex) {
         active_tsex++;
-        Logger::getInstance().log("КС ID=" + std::to_string(id) + ": запущен цех (активных: " + std::to_string(active_tsex) + ")");
+        std::cerr << "КС ID=" << id << ": запущен цех (активных: " << active_tsex << ")\n";
         std::cout << "Цех запущен, активных цехов: " << active_tsex << "\n";
     }
     else {
@@ -86,7 +91,7 @@ void Cs::startWorkshop() {
 void Cs::stopWorkshop() {
     if (active_tsex > 0) {
         active_tsex--;
-        Logger::getInstance().log("КС ID=" + std::to_string(id) + ": остановлен цех (активных: " + std::to_string(active_tsex) + ")");
+        std::cerr << "КС ID=" << id << ": остановлен цех (активных: " << active_tsex << ")\n";
         std::cout << "Цех остановлен, активных цехов: " << active_tsex << "\n";
     }
     else {

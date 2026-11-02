@@ -35,9 +35,6 @@
     <ClInclude Include="Pipe.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Cs.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>

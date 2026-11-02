@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "Logger.h"
 
 class Pipe {
 private:

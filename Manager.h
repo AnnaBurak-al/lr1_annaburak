@@ -1,7 +1,7 @@
 #pragma once
-#include <map>
+#include <unordered_map>
 #include "Pipe.h"
 #include "Cs.h"
 
-void managePipes(std::map<int, Pipe>& pipes);
-void manageCS(std::map<int, Cs>& stations);
+void managePipes(std::unordered_map<int, Pipe>& pipes);
+void manageCS(std::unordered_map<int, Cs>& stations);

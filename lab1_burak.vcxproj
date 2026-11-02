@@ -147,7 +147,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cs.h" />
-    <ClInclude Include="Logger.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Utils.h" />

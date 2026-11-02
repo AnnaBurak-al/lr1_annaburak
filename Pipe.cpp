@@ -2,7 +2,11 @@
 
 int Pipe::nextId = 1;
 
-Pipe::Pipe() : id(nextId++), length(0.0), diametr(0), repair(false) {}
+Pipe::Pipe() : 
+    id(nextId++), 
+    length(0.0), 
+    diametr(0), 
+    repair(false) {}
 
 void Pipe::updateNextId(int loadedId) {
     if (loadedId >= nextId) 
@@ -48,7 +52,7 @@ void Pipe::read() {
         }
         std::cout << "Введите 0 или 1.\n";
     }
-    Logger::getInstance().log("Создана труба ID = " + std::to_string(id) + ": " + name);
+    std::cerr << "Создана труба ID=" << id << ": " << name << "\n";
 }
 
 std::ostream& operator<<(std::ostream& os, const Pipe& p) {
@@ -61,16 +65,25 @@ std::ostream& operator<<(std::ostream& os, const Pipe& p) {
 }
 
 void Pipe::ent_repair() {
-    repair = !repair;
-    std::cout << "Статус изменен: " << (repair ? "В ремонте" : "В работе") << "\n";
-    Logger::getInstance().log("Труба ID=" + std::to_string(id) + " сменила статус ремонта");
+    if (repair) {
+        repair = false;
+        std::cout << "Статус изменен: Труба выведена из ремонта\n";
+        std::cerr << "Труба ID=" << id << " выведена из ремонта\n";
+    }
+    else {
+        repair = true;
+        std::cout << "Статус изменен: Труба отправлена в ремонт\n";
+        std::cerr << "Труба ID=" << id << " отправлена в ремонт\n";
+    }
 }
 
 bool Pipe::matchesName(const std::string& q) const 
-{ return name.find(q) != std::string::npos; }
+{ 
+    return name.find(q) != std::string::npos; }
 
 bool Pipe::matchesRepair(bool state) const 
-{ return repair == state; }
+{ 
+    return repair == state; }
 
 void Pipe::saveToFile(std::ofstream& out) const {
     out << id << "\n";
