@@ -21,6 +21,7 @@ public:
 
     void read();
     friend std::ostream& operator<<(std::ostream& os, const Cs& c);
+    friend std::istream& operator>>(std::istream& is, Cs& c);
 
     void work_cs();          
     void startWorkshop();    

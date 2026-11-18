@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cs.h" />
+    <ClInclude Include="GasNetwork.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Utils.h" />

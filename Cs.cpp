@@ -53,6 +53,40 @@ void Cs::read() {
     std::cerr << "Создана КС ID=" << id << ": " << name << "\n";
 }
 
+std::istream& operator>>(std::istream& is, Cs& c) {
+    std::cout << "Введите название КС: ";
+    std::getline(is >> std::ws, c.name);
+
+    while (true) {
+        std::cout << "Введите количество цехов (всего): ";
+        if (is >> c.kol_tsex && is.peek() == '\n' && c.kol_tsex > 0) break;
+        std::cout << "Введите положительное целое число.\n";
+        is.clear();
+        is.ignore(10000, '\n');
+    }
+
+    while (true) {
+        std::cout << "Введите количество цехов в работе: ";
+        if (is >> c.active_tsex && is.peek() == '\n' &&
+            c.active_tsex >= 0 && c.active_tsex <= c.kol_tsex) break;
+        std::cout << "Введите число от 0 до " << c.kol_tsex << ".\n";
+        is.clear();
+        is.ignore(10000, '\n');
+    }
+
+    while (true) {
+        std::cout << "Введите класс станции: ";
+        if (is >> c.class_stan && is.peek() == '\n' && c.class_stan > 0) break;
+        std::cout << "Введите положительное целое число.\n";
+        is.clear();
+        is.ignore(10000, '\n');
+    }
+
+    std::cerr << "Создана КС ID=" << c.id << ": " << c.name << "\n";
+    return is;
+}
+
+
 std::ostream& operator<<(std::ostream& os, const Cs& c) {
     os << "\nИтоговая информация о КС (ID: " << c.id << ")\n";
     os << "Название: " << c.name << "\n";

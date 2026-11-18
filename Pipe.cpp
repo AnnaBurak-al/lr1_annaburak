@@ -55,6 +55,45 @@ void Pipe::read() {
     std::cerr << "Создана труба ID=" << id << ": " << name << "\n";
 }
 
+
+
+std::istream& operator>>(std::istream& is, Pipe& p) {
+    std::cout << "Введите название трубы: ";
+    std::getline(is >> std::ws, p.name);
+
+    while (true) {
+        std::cout << "Введите длину в км: ";
+        if (is >> p.length && is.peek() == '\n' && p.length > 0) break;
+        std::cout << "Введите положительное число.\n";
+        is.clear();
+        is.ignore(10000, '\n');
+    }
+
+    while (true) {
+        std::cout << "Введите диаметр в мм: ";
+        if (is >> p.diametr && is.peek() == '\n' && p.diametr > 0) break;
+        std::cout << "Введите положительное число\n";
+        is.clear();
+        is.ignore(10000, '\n');
+    }
+
+    is.ignore(10000, '\n');
+
+    std::string input;
+    while (true) {
+        std::cout << "В ремонте? (1 - да, 0 - нет): ";
+        std::getline(is, input);
+        if (input == "0" || input == "1") {
+            p.repair = (input == "1");
+            break;
+        }
+        std::cout << "Введите 0 или 1.\n";
+    }
+
+    std::cerr << "Создана труба ID=" << p.id << ": " << p.name << "\n";
+    return is;
+}
+
 std::ostream& operator<<(std::ostream& os, const Pipe& p) {
     os << "\nИтоговая информация о трубе (ID: " << p.id << ")\n";
     os << "Название: " << p.name << "\n";

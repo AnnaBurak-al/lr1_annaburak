@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void managePipes(unordered_map<int, Pipe>& pipes) {
+void Manager::managePipes(unordered_map<int, Pipe>& pipes) {
     auto found = findPipes(pipes);
     if (found.empty()) {
         cout << "Ничего не найдено.\n";
@@ -47,7 +47,7 @@ void managePipes(unordered_map<int, Pipe>& pipes) {
     }
 }
 
-void manageCS(unordered_map<int, Cs>& stations) {
+void Manager::manageCS(unordered_map<int, Cs>& stations) {
     auto found = findCS(stations);
     if (found.empty()) {
         cout << "Ничего не найдено.\n";

@@ -21,6 +21,7 @@ public:
 
     void read();
     friend std::ostream& operator<<(std::ostream& os, const Pipe& p);
+    friend std::istream& operator>>(std::istream& is, Pipe& p);
 
     void ent_repair();
 
